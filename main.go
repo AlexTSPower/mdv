@@ -5,10 +5,17 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"terminal-markdown/app"
+	"github.com/AlexTSPower/mdv/app"
 )
 
+var version = "dev"
+
 func main() {
+	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-v") {
+		fmt.Println("mdv", version)
+		return
+	}
+
 	root := "."
 	if len(os.Args) > 1 {
 		root = os.Args[1]

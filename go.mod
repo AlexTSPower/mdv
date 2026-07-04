@@ -1,4 +1,4 @@
-module terminal-markdown
+module github.com/AlexTSPower/mdv
 
 go 1.26.4
 

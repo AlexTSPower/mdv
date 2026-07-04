@@ -2,3 +2,4 @@ mdv
 terminal-markdown
 *.test
 .DS_Store
+dist/
