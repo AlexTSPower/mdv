@@ -14,7 +14,7 @@ import (
 // code-block contrast.
 const mdvStyle = `{
   "document": { "margin": 2, "block_suffix": "\n" },
-  "block_quote": { "indent": 1, "indent_token": "│ ", "color": "244" },
+  "block_quote": { "indent": 1, "indent_token": "│ ", "color": "252", "italic": true },
   "list": { "level_indent": 2 },
   "heading": { "block_suffix": "\n", "bold": true },
   "h1": {
