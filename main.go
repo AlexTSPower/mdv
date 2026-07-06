@@ -5,14 +5,14 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/AlexTSPower/mdv/app"
+	"github.com/AlexTSPower/StackReader/app"
 )
 
 var version = "dev"
 
 func main() {
 	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-v") {
-		fmt.Println("mdv", version)
+		fmt.Println("stackreader", version)
 		return
 	}
 
@@ -23,23 +23,23 @@ func main() {
 
 	info, err := os.Stat(root)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "mdv: %v\n", err)
+		fmt.Fprintf(os.Stderr, "stackreader: %v\n", err)
 		os.Exit(1)
 	}
 	if !info.IsDir() {
-		fmt.Fprintf(os.Stderr, "mdv: %s is not a directory\n", root)
+		fmt.Fprintf(os.Stderr, "stackreader: %s is not a directory\n", root)
 		os.Exit(1)
 	}
 
 	model, err := app.New(root)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "mdv: %v\n", err)
+		fmt.Fprintf(os.Stderr, "stackreader: %v\n", err)
 		os.Exit(1)
 	}
 
 	p := tea.NewProgram(model, tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "mdv: %v\n", err)
+		fmt.Fprintf(os.Stderr, "stackreader: %v\n", err)
 		os.Exit(1)
 	}
 }

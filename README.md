@@ -1,26 +1,26 @@
-# mdv
+# stackreader
 
 Terminal markdown viewer with GitHub-style rendering. Built with [Charm](https://charm.sh/).
 
-![demo](https://github.com/AlexTSPower/mdv/assets/demo.gif)
+![demo](https://github.com/AlexTSPower/StackReader/assets/demo.gif)
 
 ## Install
 
 ```bash
-brew install AlexTSPower/tap/mdv
+brew install AlexTSPower/tap/stackreader
 ```
 
 Or with Go:
 
 ```bash
-go install github.com/AlexTSPower/mdv@latest
+go install github.com/AlexTSPower/StackReader@latest
 ```
 
 ## Usage
 
 ```bash
-mdv              # open file browser at current directory
-mdv ./path/repo  # open file browser at specified path
+stackreader              # open file browser at current directory
+stackreader ./path/repo  # open file browser at specified path
 ```
 
 ## Keybindings
@@ -38,9 +38,9 @@ mdv ./path/repo  # open file browser at specified path
 ## Build from source
 
 ```bash
-git clone https://github.com/AlexTSPower/mdv
-cd mdv
-go build -o mdv .
+git clone https://github.com/AlexTSPower/StackReader
+cd StackReader
+go build -o stackreader .
 ```
 
 ## License

@@ -14,14 +14,14 @@ builds:
       - amd64
       - arm64
     main: .
-    binary: mdv
+    binary: stackreader
     ldflags:
       - -s -w -X main.version={{.Version}}
 
 archives:
   - formats:
       - tar.gz
-    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "stackreader_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - LICENSE
       - README.md
@@ -34,7 +34,7 @@ brews:
       owner: AlexTSPower
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    homepage: https://github.com/AlexTSPower/mdv
+    homepage: https://github.com/AlexTSPower/StackReader
     description: Terminal markdown viewer with GitHub-style rendering
     license: MIT
     commit_author:
@@ -42,6 +42,6 @@ brews:
       email: bot@goreleaser.com
     directory: Formula
     install: |
-      bin.install "mdv"
+      bin.install "stackreader"
     test: |
-      system "#{bin}/mdv", "--version"
+      system "#{bin}/stackreader", "--version"

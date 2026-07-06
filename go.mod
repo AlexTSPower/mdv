@@ -1,4 +1,4 @@
-module github.com/AlexTSPower/mdv
+module github.com/AlexTSPower/StackReader
 
 go 1.26.4
 
