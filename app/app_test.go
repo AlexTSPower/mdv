@@ -211,3 +211,65 @@ func TestApp_TabFocus_ViewReflectsFocus(t *testing.T) {
 		t.Error("status bar should say 'viewer' when viewer is focused")
 	}
 }
+
+func TestApp_NewSingleFile_NoSidebar(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.md")
+	os.WriteFile(path, []byte("# Hello"), 0644)
+
+	a, err := NewSingleFile(path, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if a.showSidebar {
+		t.Error("single-file mode should have showSidebar=false")
+	}
+	if a.focus != focusViewer {
+		t.Error("single-file mode should start focused on viewer")
+	}
+	if a.singleFile != path {
+		t.Errorf("singleFile should be %q, got %q", path, a.singleFile)
+	}
+}
+
+func TestApp_NewSingleFile_InitSendsFileSelectedMsg(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.md")
+	os.WriteFile(path, []byte("# Hello"), 0644)
+
+	a, err := NewSingleFile(path, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd := a.Init()
+	if cmd == nil {
+		t.Fatal("Init() should return a command in single-file mode")
+	}
+	msg := cmd()
+	sel, ok := msg.(FileSelectedMsg)
+	if !ok {
+		t.Fatalf("Init() command should return FileSelectedMsg, got %T", msg)
+	}
+	if sel.Path != path {
+		t.Errorf("FileSelectedMsg.Path = %q, want %q", sel.Path, path)
+	}
+}
+
+func TestApp_SingleFileMode_BKeyIsNoop(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.md")
+	os.WriteFile(path, []byte("# Hello"), 0644)
+
+	a, err := NewSingleFile(path, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	model, _ := a.Update(tea.WindowSizeMsg{Width: 120, Height: 40})
+	a2 := model.(App)
+
+	model, _ = a2.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune("b")})
+	a3 := model.(App)
+	if a3.showSidebar {
+		t.Error("b key should not toggle sidebar in single-file mode")
+	}
+}

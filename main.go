@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/AlexTSPower/StackReader/app"
@@ -11,27 +13,44 @@ import (
 var version = "dev"
 
 func main() {
-	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-v") {
-		fmt.Println("stackreader", version)
-		return
+	// Collect non-flag args; handle --version/-v early.
+	var watchFlag bool
+	var paths []string
+	for _, arg := range os.Args[1:] {
+		switch arg {
+		case "--version", "-v":
+			fmt.Println("stackreader", version)
+			return
+		case "--watch":
+			watchFlag = true
+		default:
+			paths = append(paths, arg)
+		}
+	}
+	_ = watchFlag // used in Task 3
+
+	path := "."
+	if len(paths) > 0 {
+		path = paths[0]
 	}
 
-	root := "."
-	if len(os.Args) > 1 {
-		root = os.Args[1]
-	}
-
-	info, err := os.Stat(root)
+	info, err := os.Stat(path)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "stackreader: %v\n", err)
 		os.Exit(1)
 	}
-	if !info.IsDir() {
-		fmt.Fprintf(os.Stderr, "stackreader: %s is not a directory\n", root)
-		os.Exit(1)
-	}
 
-	model, err := app.New(root)
+	var model tea.Model
+	if info.IsDir() {
+		model, err = app.New(path)
+	} else {
+		ext := strings.ToLower(filepath.Ext(path))
+		if ext != ".md" && ext != ".mdx" {
+			fmt.Fprintf(os.Stderr, "stackreader: not a markdown file or directory\n")
+			os.Exit(1)
+		}
+		model, err = app.NewSingleFile(path, false) // watch wired in Task 3
+	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "stackreader: %v\n", err)
 		os.Exit(1)

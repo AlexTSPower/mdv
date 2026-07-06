@@ -56,6 +56,7 @@ type App struct {
 	focus       focusTarget
 	currentFile string
 	statusMsg   string
+	singleFile  string // non-empty when started with a file argument
 }
 
 // New constructs the root App model rooted at root.
@@ -72,7 +73,28 @@ func New(root string) (App, error) {
 	}, nil
 }
 
-func (a App) Init() tea.Cmd { return nil }
+// NewSingleFile constructs an App in single-file mode: no browser, viewer fills
+// the full terminal. watch is stored for use in Task 3; pass false for now.
+func NewSingleFile(path string, watch bool) (App, error) {
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return App{}, err
+	}
+	return App{
+		viewer:      NewViewer(80, 20),
+		showSidebar: false,
+		focus:       focusViewer,
+		singleFile:  absPath,
+	}, nil
+}
+
+func (a App) Init() tea.Cmd {
+	if a.singleFile == "" {
+		return nil
+	}
+	path := a.singleFile
+	return func() tea.Msg { return FileSelectedMsg{Path: path} }
+}
 
 // setStatus sets a status bar message and schedules auto-clear after 3 s.
 func (a App) setStatus(msg string) (App, tea.Cmd) {
@@ -106,6 +128,9 @@ func (a App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q", "ctrl+c":
 			return a, tea.Quit
 		case "b":
+			if a.singleFile != "" {
+				return a, nil
+			}
 			a.showSidebar = !a.showSidebar
 			a = a.applyLayout()
 			return a, nil
